@@ -1,0 +1,2 @@
+Main-Class: dev.carv.task.cli.Main
+Built-By: carolusquintus
