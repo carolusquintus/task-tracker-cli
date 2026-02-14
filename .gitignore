@@ -31,6 +31,6 @@ bin/
 .DS_Store
 
 ### other ###
-sources.txt
-*.jar
-task
+/source.txt
+/*.jar
+/task
