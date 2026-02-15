@@ -16,7 +16,7 @@ public class Invoker {
         this.argumentParser = new ArgumentParser(args);
         var params = argumentParser.parse();
 
-        var notImplemented = new IllegalArgumentException("Option" + params.getKey() + " is not implemented yet");
+        var notImplemented = new IllegalArgumentException("Option: " + params.getKey() + " is not implemented yet");
 
         command = switch (params.getKey()) {
             case ADD                -> throw notImplemented;
