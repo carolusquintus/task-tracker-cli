@@ -1,6 +1,6 @@
 package dev.carv.task.cli.command;
 
-public class AddCommand implements Command {
+public final class AddCommand implements Command {
 
     @Override
     public void execute() {

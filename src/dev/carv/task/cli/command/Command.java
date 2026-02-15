@@ -1,6 +1,6 @@
 package dev.carv.task.cli.command;
 
-public interface Command {
+public sealed interface Command permits AddCommand, VersionCommand {
 
     void execute();
 
