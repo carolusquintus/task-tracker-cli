@@ -6,19 +6,21 @@ import dev.carv.task.cli.command.VersionCommand;
 
 public class Invoker {
 
-    private ArgumentParser argumentParser;
+    private ArgumentsParser argumentParser;
     private Command command;
 
     public Invoker(String[] args) {
         if (args == null || args.length == 0) {
             throw new IllegalArgumentException("No arguments provided");
         }
-        this.argumentParser = new ArgumentParser(args);
-        var params = argumentParser.parse();
+        this.argumentParser = new ArgumentsParser(args);
+        var parsed = argumentParser.parse();
+        var option = parsed.getKey();
+        var params = parsed.getValue();
 
-        var notImplemented = new IllegalArgumentException("Option: " + params.getKey() + " is not implemented yet");
+        var notImplemented = new IllegalArgumentException("Option: " + option + " is not implemented yet");
 
-        command = switch (params.getKey()) {
+        command = switch (option) {
             case ADD                -> throw notImplemented;
             case UPDATE             -> throw notImplemented;
             case DELETE             -> throw notImplemented;

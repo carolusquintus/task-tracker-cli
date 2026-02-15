@@ -3,7 +3,7 @@ package dev.carv.task.cli.domain;
 import java.util.Arrays;
 import java.util.List;
 
-public enum Instruction {
+public enum Option {
 
     ADD("add", "--add", "-a"),
     UPDATE("update", "--update", "-u"),
@@ -16,15 +16,15 @@ public enum Instruction {
 
     private final List<String> alternativeNames;
 
-    Instruction(String... altNames) {
+    Option(String... altNames) {
         this.alternativeNames = Arrays.stream(altNames).toList();
     }
 
-    public static Instruction fromString(String instruction) {
+    public static Option fromString(String option) {
         return Arrays.stream(values())
-            .filter(i -> i.alternativeNames.contains(instruction))
+            .filter(o -> o.alternativeNames.contains(option))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Unrecognized option: " + instruction));
+            .orElseThrow(() -> new IllegalArgumentException("Unrecognized option: " + option));
     }
 
 }
