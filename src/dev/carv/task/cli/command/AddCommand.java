@@ -22,7 +22,7 @@ public final class AddCommand implements Command {
     public void execute() {
         var task = new Task(description);
         int id = repository.insert(task);
-        IO.println("Task added successfully (): " + id);
+        IO.println("Task added successfully (ID:): " + id);
     }
 
 }
