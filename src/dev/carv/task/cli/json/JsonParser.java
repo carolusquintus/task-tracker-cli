@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 // Much of the code implemented in this class is based on the following post
@@ -32,23 +33,87 @@ public final class JsonParser {
    public Object parseJson(String json) {
         json = json.trim();
         if (json.startsWith("{")) {
-
+            return parseJsonObject(json);
         }
         if (json.startsWith("[")) {
-
+            return parseJsonArray(json);
         }
+        if (json.startsWith("\"") && json.endsWith("\"")) {
+            return json.substring(1, json.length() - 1);
+        }
+        if (json.equals("true") || json.equals("false")) {
+            return Boolean.parseBoolean(json);
+        }
+        if (json.matches("-?\\d+(\\.\\d+)?([eE][+-]?\\d+)?")) {
+            if (json.contains(".") || json.contains("e") || json.contains("E")) {
+                return Double.parseDouble(json);
+            } else {
+                return Long.parseLong(json);
+            }
+        }
+        throw new IllegalArgumentException("Invalid JSON value: " + json);
    }
 
    public Map<String, Object> parseJsonObject(String json) {
         var map = new LinkedHashMap<String, Object>();
         json = json.substring(1, json.length() - 1).trim();
+        var entries = splitJsonEntries(json);
+        for (String entry : entries) {
+            var keyValue = entry.split(":", 2);
+            var key = parseJson(keyValue[0]).toString();
+            var value = parseJson(keyValue[1]);
+            map.put(key, value);
+        }
+        return map;
+   }
 
+   public List<Object> parseJsonArray(String json) {
+        var list = new ArrayList<>();
+        json = json.substring(1, json.length() - 1).trim();
+        var entries = splitJsonEntries(json);
+        for (String entry : entries) {
+            list.add(parseJson(entry));
+        }
+        return list;
    }
 
    private String[] splitJsonEntries(String json) {
         var entries = new ArrayList<String>();
+        int bracketCount = 0;
+        int braceCount = 0;
+        boolean inQuotes = false;
+        var entry = new StringBuilder();
 
+        for (int i = 0; i < json.length(); i++) {
+            char c = json.charAt(i);
 
+            if (c == '"') {
+                inQuotes = !inQuotes;
+            }
+
+            if (!inQuotes) {
+                if (c == '{') {
+                    braceCount++;
+                } else if (c == '}') {
+                    braceCount--;
+                } else if (c == '[') {
+                    bracketCount++;
+                } else if (c == ']') {
+                    bracketCount--;
+                } else if (c == ',' && bracketCount == 0 && braceCount == 0) {
+                    entries.add(entry.toString().trim());
+                    entry.setLength(0);
+                    continue;
+                }
+            }
+            entry.append(c);
+
+            if (!entry.isEmpty()) {
+                entries.add(entry.toString().trim());
+            }
+        }
+
+        return entries.toArray(new String[0]);
    }
 
 }

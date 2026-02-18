@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +20,15 @@ public class TaskRepository implements Repository<Task, Integer> {
 
     private static final Path TASKS_JSON = Path.of("./tasks-stored.json");
     private JsonParser parser = JsonParser.getInstance();
+    private List<Object> tasks;
 
     private List<Task> tasks;
 
     public TaskRepository() {
         try {
             if (Files.exists(TASKS_JSON)) {
-                IO.println(parser.readJson(TASKS_JSON));
+                var jsonString = parser.readJson(TASKS_JSON);
+                tasks = parser.parseJson(jsonString);
             } else {
                 var perms = PosixFilePermissions.fromString("rw-rw-rw-");
                 var attrs = PosixFilePermissions.asFileAttribute(perms);
