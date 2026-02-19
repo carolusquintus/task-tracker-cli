@@ -1,6 +1,7 @@
 package dev.carv.task.cli.domain;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public record Task(
     Integer id,
@@ -23,7 +24,19 @@ public record Task(
                 "createdAt": "%s",
                 "updatedAt": "%s"
             }""";
-    };
+    }
+
+    public String idString() {
+        return Integer.toString(id);
+    }
+
+    public String createdAtFormatted(DateTimeFormatter format) {
+        return format.format(createdAt);
+    }
+
+    public String updatedAtFormatted(DateTimeFormatter format) {
+        return format.format(updatedAt);
+    }
 
     public String toString() {
         return preFormatted().formatted(id, description, status, createdAt, updatedAt);

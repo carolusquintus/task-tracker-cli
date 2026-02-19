@@ -1,9 +1,6 @@
 package dev.carv.task.cli.context;
 
-import dev.carv.task.cli.command.AddCommand;
-import dev.carv.task.cli.command.Command;
-import dev.carv.task.cli.command.HelpCommand;
-import dev.carv.task.cli.command.VersionCommand;
+import dev.carv.task.cli.command.*;
 import dev.carv.task.cli.repository.TaskRepository;
 
 public class Invoker {
@@ -29,7 +26,7 @@ public class Invoker {
             case DELETE             -> throw notImplemented;
             case MARK_IN_PROGRESS   -> throw notImplemented;
             case MARK_DONE          -> throw notImplemented;
-            case LIST               -> throw notImplemented;
+            case LIST               -> new ListCommand(repository, params);
             case VERSION            -> new VersionCommand();
             case HELP               -> new HelpCommand();
         };
