@@ -27,7 +27,7 @@ public class Invoker {
             case DELETE             -> throw notImplemented;
             case MARK_IN_PROGRESS   -> throw notImplemented;
             case MARK_DONE          -> throw notImplemented;
-            case LIST               -> throw notImplemented;
+            case LIST               -> new ListCommand(service, params);
             case VERSION            -> new VersionCommand();
             case HELP               -> new HelpCommand();
         };

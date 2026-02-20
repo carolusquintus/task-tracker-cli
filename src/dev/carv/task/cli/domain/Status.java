@@ -15,9 +15,9 @@ public enum Status {
 
     public static Status fromValue(String value) {
         return Arrays.stream(values())
-            .filter(s -> s.value.equalsIgnoreCase(value))
+            .filter(s -> s.value.equalsIgnoreCase(value) || s.name().equalsIgnoreCase(value))
             .findFirst()
-            .orElse(null);
+            .orElseThrow(() -> new IllegalArgumentException("Invalid status: " + value));
     }
 
 }

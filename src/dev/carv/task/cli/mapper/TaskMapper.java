@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 public class TaskMapper {
 
     public Task toTask(Map<String, Object> map) {
@@ -14,8 +16,8 @@ public class TaskMapper {
             (Long) map.get("id"),
             (String) map.get("description"),
             Status.valueOf((String) map.get("status")),
-            (LocalDateTime) map.get("createdAt"),
-            (LocalDateTime) map.get("updatedAt")
+            isNull(map.get("createdAt")) ? null : LocalDateTime.parse((String) map.get("createdAt")),
+            isNull(map.get("updatedAt")) ? null : LocalDateTime.parse((String) map.get("updatedAt"))
         );
     }
 
@@ -24,8 +26,8 @@ public class TaskMapper {
         map.put("id", task.id());
         map.put("description", task.description());
         map.put("status", task.status().name());
-        map.put("createdAt", task.createdAt());
-        map.put("updatedAt", task.updatedAt());
+        map.put("createdAt", isNull(task.createdAt()) ? null : task.createdAt().toString());
+        map.put("updatedAt", isNull(task.updatedAt()) ? null : task.updatedAt().toString());
         return map;
     }
 

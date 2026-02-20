@@ -1,10 +1,12 @@
 package dev.carv.task.cli.service;
 
+import dev.carv.task.cli.domain.Status;
 import dev.carv.task.cli.domain.Task;
 import dev.carv.task.cli.mapper.TaskMapper;
 import dev.carv.task.cli.repository.Repository;
 import dev.carv.task.cli.repository.TaskRepository;
 
+import java.util.List;
 import java.util.Map;
 
 public final class TaskService {
@@ -21,6 +23,16 @@ public final class TaskService {
         var taskMap = mapper.toMap(task);
         var taskSaved = repository.save(taskMap);
         return mapper.toTask(taskSaved).id();
+    }
+
+    public List<Task> listTasks(Status query) {
+        var task = switch (query) {
+            case null -> repository.findAll();
+            case TODO, IN_PROGRESS, DONE -> repository.findAllByStatus(query.name());
+        };
+        return task.stream()
+            .map(mapper::toTask)
+            .toList();
     }
 
 }

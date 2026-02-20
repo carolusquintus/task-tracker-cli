@@ -8,4 +8,6 @@ public interface Repository<T, K> {
 
     List<T> findAll();
 
+    List<T> findAllByStatus(String status);
+
 }

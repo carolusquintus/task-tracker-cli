@@ -2,21 +2,23 @@ package dev.carv.task.cli.command;
 
 import dev.carv.task.cli.domain.Status;
 import dev.carv.task.cli.domain.Task;
-import dev.carv.task.cli.repository.Repository;
+import dev.carv.task.cli.service.TaskService;
 
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Math.max;
+
 public final class ListCommand implements Command {
 
     private Status query;
-    private final Repository<Task, Integer> repository;
+    private final TaskService service;
     private static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public ListCommand(Repository<Task, Integer> repository, List<String> params) {
-        this.repository = repository;
+    public ListCommand(TaskService service, List<String> params) {
+        this.service = service;
         if (!params.isEmpty()) {
             this.query = Status.fromValue(params.getFirst());
         }
@@ -24,26 +26,35 @@ public final class ListCommand implements Command {
 
     @Override
     public void execute() {
-        var tasks = repository.findAll();
-
+        var tasks = service.listTasks(query);
         printTable(tasks);
     }
 
-    private Map<String, Integer> collectHighestValuesPerAttribute(List<Task> tasks) {
+    private void printTable(List<Task> tasks) {
+        var columnSizes = collectColumnSizes(tasks);
+
+        printLine(columnSizes);
+        printHeader(columnSizes);
+        printLine(columnSizes);
+        printRows(tasks, columnSizes);
+        printLine(columnSizes);
+    }
+
+    private Map<String, Integer> collectColumnSizes(List<Task> tasks) {
         var result = new LinkedHashMap<>(Map.of(
-            "id", 2,
-            "description", 0,
-            "status", 0,
-            "createdAt", 0,
-            "updatedAt", 0
+            "id",           "ID".length(),
+            "description",  "DESCRIPTION".length(),
+            "status",       "STATUS".length(),
+            "createdAt",    "CREATED AT".length(),
+            "updatedAt",    "UPDATED AT".length()
         ));
 
         for (var task : tasks) {
-            result.put("id", Math.max(result.get("id"), task.idString().length()));
-            result.put("description", Math.max(result.get("description"), task.description().length()));
-            result.put("status", Math.max(result.get("status"), task.status().name().length()));
-            result.put("createdAt", Math.max(result.get("createdAt"), task.createdAtFormatted(FORMAT_DATE).length()));
-            result.put("updatedAt", Math.max(result.get("updatedAt"), task.updatedAtFormatted(FORMAT_DATE).length()));
+            result.put("id", max(result.get("id"), task.idString().length()));
+            result.put("description", max(result.get("description"), task.description().length()));
+            result.put("status", max(result.get("status"), task.status().name().length()));
+            result.put("createdAt", max(result.get("createdAt"), task.createdAtFormatted(FORMAT_DATE).length()));
+            result.put("updatedAt", max(result.get("updatedAt"), task.updatedAtFormatted(FORMAT_DATE).length()));
         }
 
         result.replaceAll((k, v) -> v + 2);
@@ -51,36 +62,35 @@ public final class ListCommand implements Command {
         return result;
     }
 
-    private void printTable(List<Task> tasks) {
-        var collected = collectHighestValuesPerAttribute(tasks);
+    private static void printLine(Map<String, Integer> columnSizes) {
+        IO.println(new StringBuilder()
+            .append("+").append("-".repeat(columnSizes.get("id")))
+            .append("+").append("-".repeat(columnSizes.get("description")))
+            .append("+").append("-".repeat(columnSizes.get("status")))
+            .append("+").append("-".repeat(columnSizes.get("createdAt")))
+            .append("+").append("-".repeat(columnSizes.get("updatedAt"))).append('+')
+            .toString());
+    }
 
-        var line =  new StringBuilder()
-            .append("+").append("-".repeat(collected.get("id")))
-            .append("+").append("-".repeat(collected.get("description")))
-            .append("+").append("-".repeat(collected.get("status")))
-            .append("+").append("-".repeat(collected.get("createdAt")))
-            .append("+").append("-".repeat(collected.get("updatedAt"))).append('+');
+    private static void printHeader(Map<String, Integer> columnSizes) {
+        IO.println(new StringBuilder()
+            .append("|").append(" ID").append(" ".repeat(columnSizes.get("id") - 3))
+            .append("|").append(" DESCRIPTION").append(" ".repeat(columnSizes.get("description") - 12))
+            .append("|").append(" STATUS").append(" ".repeat(columnSizes.get("status") - 7))
+            .append("|").append(" CREATED AT").append(" ".repeat(columnSizes.get("createdAt") - 11))
+            .append("|").append(" UPDATED AT").append(" ".repeat(columnSizes.get("updatedAt") - 11)).append('|')
+            .toString());
+    }
 
-        var header = new StringBuilder()
-            .append("|").append(" ID").append(" ".repeat(collected.get("id") - 3))
-            .append("|").append(" DESCRIPTION").append(" ".repeat(collected.get("description") - 12))
-            .append("|").append(" STATUS").append(" ".repeat(collected.get("status") - 7))
-            .append("|").append(" CREATED AT").append(" ".repeat(collected.get("createdAt") - 11))
-            .append("|").append(" UPDATED AT").append(" ".repeat(collected.get("updatedAt") - 11)).append('|');
-
-        IO.println(line.toString());
-        IO.println(header.toString());
-        IO.println(line.toString());
-        for (var task : tasks) {
-            var row = new StringBuilder()
-                .append("|").append(" ".repeat(collected.get("id") - task.idString().length() - 1)).append(task.id()).append(" ")
-                .append("|").append(" ").append(task.description()).append(" ".repeat(collected.get("description") - task.description().length() - 2)).append(" ")
-                .append("|").append(" ").append(task.status().name()).append(" ".repeat(collected.get("status") - task.status().name().length() - 2)).append(" ")
-                .append("|").append(" ").append(task.createdAt().toString()).append(" ".repeat(collected.get("createdAt") - task.createdAt().toString().length() - 2)).append(" ")
-                .append("|").append(" ").append(task.updatedAt().toString()).append(" ".repeat(collected.get("updatedAt") - task.updatedAt().toString().length() - 2)).append(" ").append("|");
-            IO.println(row.toString());
-        }
-        IO.println(line.toString());
+    private static void printRows(List<Task> tasks, Map<String, Integer> columnSizes) {
+        tasks.forEach(task -> IO.println(
+            new StringBuilder()
+                .append("|").append(" ".repeat(columnSizes.get("id") - task.idString().length() - 1)).append(task.id()).append(" ")
+                .append("|").append(" ").append(task.description()).append(" ".repeat(columnSizes.get("description") - task.description().length() - 2)).append(" ")
+                .append("|").append(" ").append(task.status().name()).append(" ".repeat(columnSizes.get("status") - task.status().name().length() - 2)).append(" ")
+                .append("|").append(" ").append(task.createdAtFormatted(FORMAT_DATE)).append(" ".repeat(columnSizes.get("createdAt") - task.createdAtFormatted(FORMAT_DATE).length() - 2)).append(" ")
+                .append("|").append(" ").append(task.updatedAtFormatted(FORMAT_DATE)).append(" ".repeat(columnSizes.get("updatedAt") - task.updatedAtFormatted(FORMAT_DATE).length() - 2)).append(" ").append("|").toString()
+        ));
     }
 
 }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static dev.carv.task.cli.domain.Status.TODO;
+import static java.util.Objects.isNull;
 
 public record Task(
     Long id,
@@ -26,11 +27,11 @@ public record Task(
     }
 
     public String createdAtFormatted(DateTimeFormatter format) {
-        return format.format(createdAt);
+        return isNull(createdAt) ? "null" : format.format(createdAt);
     }
 
     public String updatedAtFormatted(DateTimeFormatter format) {
-        return format.format(updatedAt);
+        return isNull(updatedAt) ? "null" : format.format(updatedAt);
     }
 
     public String toString() {

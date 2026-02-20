@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 public class TaskRepository implements Repository<Map<String, Object>, Long> {
 
     private List<Map<String, Object>> tasks;
@@ -58,17 +60,16 @@ public class TaskRepository implements Repository<Map<String, Object>, Long> {
 
     @Override
     public List<Map<String, Object>> findAll() {
-        return List.of();
+        return this.tasks;
     }
 
-//    @Override
-//    public List<Task> findAll() {
-//        return List.of(
-//            new Task(1, "Some description", TODO, LocalDateTime.now(), LocalDateTime.now().plusDays(1)),
-//            new Task(2, "Some description even more longer", IN_PROGRESS, LocalDateTime.now(), LocalDateTime.now().plusDays(2)),
-//            new Task(3, "I have work pending", DONE, LocalDateTime.now(), LocalDateTime.now().plusDays(3))
-//        );
-//    }
+    @Override
+    public List<Map<String, Object>> findAllByStatus(String status) {
+        return tasks.stream()
+            .filter(o -> !isNull(o.get("status")))
+            .filter(o -> o.get("status").equals(status))
+            .toList();
+    }
 
     private void storeToJson() {
         try {
