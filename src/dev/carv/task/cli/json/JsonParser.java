@@ -51,6 +51,9 @@ public final class JsonParser {
                 return Long.parseLong(json);
             }
         }
+        if (json.equals("null")) {
+            return null;
+        }
         throw new IllegalArgumentException("Invalid JSON value: " + json);
    }
 
@@ -100,20 +103,49 @@ public final class JsonParser {
                     bracketCount++;
                 } else if (c == ']') {
                     bracketCount--;
-                } else if (c == ',' && bracketCount == 0 && braceCount == 0) {
-                    entries.add(entry.toString().trim());
-                    entry.setLength(0);
-                    continue;
                 }
             }
-            entry.append(c);
 
-            if (!entry.isEmpty()) {
+            if (c == ',' && !inQuotes && bracketCount == 0 && braceCount == 0) {
                 entries.add(entry.toString().trim());
+                entry.setLength(0);
+            } else {
+                entry.append(c);
             }
+        }
+
+        if (!entry.isEmpty()) {
+           entries.add(entry.toString().trim());
         }
 
         return entries.toArray(new String[0]);
    }
 
+    public String printJson(Object json) {
+        var builder = new StringBuilder();
+        if (json instanceof Map<?, ?> map) {
+            builder.append("{");
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                builder.append("\"").append(entry.getKey()).append("\":").append(printJson(entry.getValue()));
+            }
+            builder.deleteCharAt(builder.length() - 1);
+            builder.append("}");
+        } else if (json instanceof List<?> list) {
+            builder.append("[");
+            for (Object item : list) {
+                builder.append(printJson(item)).append(",");
+            }
+            builder.deleteCharAt(builder.length() - 1);
+            builder.append("]");
+        } else if (json == null) {
+            builder.append("null").append(",");
+        } else if (json instanceof String str) {
+            builder.append("\"").append(str).append("\"").append(",");
+        } else if (json instanceof Boolean || json instanceof Number) {
+            builder.append(json.toString()).append(",");
+        } else {
+            builder.append("\"").append(json).append("\"").append(",");
+        }
+        return builder.toString();
+    }
 }

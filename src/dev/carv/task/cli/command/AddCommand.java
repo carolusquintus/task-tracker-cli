@@ -1,17 +1,17 @@
 package dev.carv.task.cli.command;
 
 import dev.carv.task.cli.domain.Task;
-import dev.carv.task.cli.repository.Repository;
+import dev.carv.task.cli.service.TaskService;
 
 import java.util.List;
 
 public final class AddCommand implements Command {
 
     private final String description;
-    private final Repository<Task, Integer> repository;
+    private final TaskService service;
 
-    public AddCommand(Repository<Task, Integer> repository, List<String> params) {
-        this.repository = repository;
+    public AddCommand(TaskService service, List<String> params) {
+        this.service = service;
         if (params.isEmpty()) {
             throw new IllegalArgumentException("Description is required for add command");
         }
@@ -20,9 +20,8 @@ public final class AddCommand implements Command {
 
     @Override
     public void execute() {
-        var task = new Task(description);
-        int id = repository.insert(task);
-        IO.println("Task added successfully (ID:): " + id);
+        Long id = service.add(new Task(description));
+        IO.println("Task added successfully (ID: %d)".formatted(id));
     }
 
 }

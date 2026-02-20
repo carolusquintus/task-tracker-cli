@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface Repository<T, K> {
 
-    K insert(T type);
+    T save(T type);
 
-    List<T> getAll();
+    List<T> findAll();
 
 }

@@ -1,5 +1,6 @@
 package dev.carv.task.cli.command;
 
+import dev.carv.task.cli.domain.Status;
 import dev.carv.task.cli.domain.Task;
 import dev.carv.task.cli.repository.Repository;
 
@@ -10,20 +11,20 @@ import java.util.Map;
 
 public final class ListCommand implements Command {
 
-    private String query;
+    private Status query;
     private final Repository<Task, Integer> repository;
     private static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public ListCommand(Repository<Task, Integer> repository, List<String> params) {
         this.repository = repository;
         if (!params.isEmpty()) {
-            this.query = params.getFirst();
+            this.query = Status.fromValue(params.getFirst());
         }
     }
 
     @Override
     public void execute() {
-        var tasks = repository.getAll();
+        var tasks = repository.findAll();
 
         printTable(tasks);
     }

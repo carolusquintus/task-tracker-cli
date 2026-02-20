@@ -2,6 +2,7 @@ package dev.carv.task.cli.context;
 
 import dev.carv.task.cli.command.*;
 import dev.carv.task.cli.repository.TaskRepository;
+import dev.carv.task.cli.service.TaskService;
 
 public class Invoker {
 
@@ -16,17 +17,17 @@ public class Invoker {
         var parsed = argumentParser.parse();
         var option = parsed.getKey();
         var params = parsed.getValue();
-        var repository = new TaskRepository();
+        var service = new TaskService();
 
         var notImplemented = new IllegalArgumentException("Option: " + option.getRaw() + " is not implemented yet");
 
         command = switch (option) {
-            case ADD                -> new AddCommand(repository, params);
+            case ADD                -> new AddCommand(service, params);
             case UPDATE             -> throw notImplemented;
             case DELETE             -> throw notImplemented;
             case MARK_IN_PROGRESS   -> throw notImplemented;
             case MARK_DONE          -> throw notImplemented;
-            case LIST               -> new ListCommand(repository, params);
+            case LIST               -> throw notImplemented;
             case VERSION            -> new VersionCommand();
             case HELP               -> new HelpCommand();
         };
