@@ -13,9 +13,9 @@ public final class AddCommand implements Command {
     public AddCommand(TaskService service, List<String> params) {
         this.service = service;
         if (params.isEmpty()) {
-            throw new IllegalArgumentException("Description is required for add command");
+            throw new IllegalArgumentException("Description is required to add a new task");
         }
-        this.description = params.getFirst();
+        this.description = params.getFirst().replaceAll("\\n", "");
     }
 
     @Override
