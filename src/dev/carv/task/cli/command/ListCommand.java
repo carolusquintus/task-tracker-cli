@@ -64,32 +64,33 @@ public final class ListCommand implements Command {
 
     private static void printLine(Map<String, Integer> columnSizes) {
         IO.println(new StringBuilder()
-            .append("+").append("-".repeat(columnSizes.get("id")))
-            .append("+").append("-".repeat(columnSizes.get("description")))
-            .append("+").append("-".repeat(columnSizes.get("status")))
-            .append("+").append("-".repeat(columnSizes.get("createdAt")))
-            .append("+").append("-".repeat(columnSizes.get("updatedAt"))).append('+')
+            .append('+').append("-".repeat(columnSizes.get("id")))
+            .append('+').append("-".repeat(columnSizes.get("description")))
+            .append('+').append("-".repeat(columnSizes.get("status")))
+            .append('+').append("-".repeat(columnSizes.get("createdAt")))
+            .append('+').append("-".repeat(columnSizes.get("updatedAt"))).append('+')
             .toString());
     }
 
     private static void printHeader(Map<String, Integer> columnSizes) {
         IO.println(new StringBuilder()
-            .append("|").append(" ID").append(" ".repeat(columnSizes.get("id") - 3))
-            .append("|").append(" DESCRIPTION").append(" ".repeat(columnSizes.get("description") - 12))
-            .append("|").append(" STATUS").append(" ".repeat(columnSizes.get("status") - 7))
-            .append("|").append(" CREATED AT").append(" ".repeat(columnSizes.get("createdAt") - 11))
-            .append("|").append(" UPDATED AT").append(" ".repeat(columnSizes.get("updatedAt") - 11)).append('|')
+            .append('|').append(" ID").append(" ".repeat(columnSizes.get("id") - 3))
+            .append('|').append(" DESCRIPTION").append(" ".repeat(columnSizes.get("description") - 12))
+            .append('|').append(" STATUS").append(" ".repeat(columnSizes.get("status") - 7))
+            .append('|').append(" CREATED AT").append(" ".repeat(columnSizes.get("createdAt") - 11))
+            .append('|').append(" UPDATED AT").append(" ".repeat(columnSizes.get("updatedAt") - 11)).append('|')
             .toString());
     }
 
     private static void printRows(List<Task> tasks, Map<String, Integer> columnSizes) {
-        tasks.forEach(task -> IO.println(
+        tasks.forEach(t -> IO.println(
             new StringBuilder()
-                .append("|").append(" ".repeat(columnSizes.get("id") - task.idString().length() - 1)).append(task.id()).append(" ")
-                .append("|").append(" ").append(task.description()).append(" ".repeat(columnSizes.get("description") - task.description().length() - 2)).append(" ")
-                .append("|").append(" ").append(task.status().name()).append(" ".repeat(columnSizes.get("status") - task.status().name().length() - 2)).append(" ")
-                .append("|").append(" ").append(task.createdAtFormatted(FORMAT_DATE)).append(" ".repeat(columnSizes.get("createdAt") - task.createdAtFormatted(FORMAT_DATE).length() - 2)).append(" ")
-                .append("|").append(" ").append(task.updatedAtFormatted(FORMAT_DATE)).append(" ".repeat(columnSizes.get("updatedAt") - task.updatedAtFormatted(FORMAT_DATE).length() - 2)).append(" ").append("|").toString()
+                .append('|').append(" ".repeat(columnSizes.get("id") - t.idString().length() - 1)).append(t.id()).append(' ')
+                .append('|').append(' ').append(t.description()).append(" ".repeat(columnSizes.get("description") - t.description().length() - 2)).append(' ')
+                .append('|').append(' ').append(t.status().name()).append(" ".repeat(columnSizes.get("status") - t.status().name().length() - 2)).append(' ')
+                .append('|').append(' ').append(t.createdAtFormatted(FORMAT_DATE)).append(" ".repeat(columnSizes.get("createdAt") - t.createdAtFormatted(FORMAT_DATE).length() - 2)).append(' ')
+                .append('|').append(' ').append(t.updatedAtFormatted(FORMAT_DATE)).append(" ".repeat(columnSizes.get("updatedAt") - t.updatedAtFormatted(FORMAT_DATE).length() - 2)).append(' ').append('|')
+                .toString()
         ));
     }
 
