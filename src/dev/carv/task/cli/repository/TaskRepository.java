@@ -9,6 +9,8 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.util.Objects.isNull;
 
@@ -61,14 +63,24 @@ public class TaskRepository implements Repository<Map<String, Object>, Long> {
     @Override
     public void update(Map<String, Object> task) {
         var id = (Long) task.get("id");
-        tasks.stream()
-            .filter(o -> o.get("id").equals(id))
-            .findFirst()
-            .ifPresent(o -> {
-                var index = tasks.indexOf(o);
+        findAndModify(
+            t -> t.get("id").equals(id),
+            t -> {
+                var index = tasks.indexOf(t);
                 tasks.set(index, task);
                 storeToJson();
-            });
+        });
+    }
+
+    @Override
+    public void delete(Map<String, Object> task) {
+        var id = (Long) task.get("id");
+        findAndModify(
+            t -> t.get("id").equals(id),
+            t -> {
+                tasks.remove(t);
+                storeToJson();
+        });
     }
 
     @Override
@@ -99,4 +111,12 @@ public class TaskRepository implements Repository<Map<String, Object>, Long> {
             throw new RuntimeException(e);
         }
     }
+
+    private void findAndModify(Predicate<Map<String, Object>> filter, Consumer<Map<String, Object>> execute) {
+        tasks.stream()
+            .filter(filter)
+            .findFirst()
+            .ifPresent(execute);
+    }
+
 }

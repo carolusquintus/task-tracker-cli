@@ -131,12 +131,16 @@ public final class JsonParser {
             builder.deleteCharAt(builder.length() - 1);
             builder.append("}");
         } else if (json instanceof List<?> list) {
-            builder.append("[");
-            for (Object item : list) {
-                builder.append(printJson(item)).append(",");
+            if (list.isEmpty()) {
+                builder.append("[]");
+            } else {
+                builder.append("[");
+                for (Object item : list) {
+                    builder.append(printJson(item)).append(",");
+                }
+                builder.deleteCharAt(builder.length() - 1);
+                builder.append("]");
             }
-            builder.deleteCharAt(builder.length() - 1);
-            builder.append("]");
         } else if (json == null) {
             builder.append("null").append(",");
         } else if (json instanceof String str) {

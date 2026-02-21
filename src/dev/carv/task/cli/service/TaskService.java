@@ -38,6 +38,11 @@ public final class TaskService {
         }
     }
 
+    public void delete(Task task) {
+        var found = repository.findById(task.id());
+        repository.delete(found);
+    }
+
     public List<Task> listTasks(Status query) {
         var task = switch (query) {
             case null -> repository.findAll();

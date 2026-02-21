@@ -13,6 +13,8 @@ public final class HelpCommand implements Command {
                             add a new task with default status: todo
               update, --update, -u <id> <description>
                             update the description of a task by given id
+              delete, --delete, -d <id>
+                            delete a task by given id
               list, --list, -l <status>|none
                             list task by given status or list all tasks
               help, --help, -h

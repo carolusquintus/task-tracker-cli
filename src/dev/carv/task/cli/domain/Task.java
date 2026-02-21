@@ -14,6 +14,10 @@ public record Task(
     LocalDateTime updatedAt
 ) {
 
+    public Task(Long id) {
+        this(id, null, null, null, null);
+    }
+
     public Task(String description) {
         this(null, description, TODO, LocalDateTime.now(), null);
     }

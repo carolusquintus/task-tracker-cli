@@ -22,7 +22,7 @@ public class Invoker {
         command = switch (option) {
             case ADD                -> new AddCommand(service, params);
             case UPDATE             -> new UpdateCommand(service, params);
-            case DELETE             -> throw notImplemented;
+            case DELETE             -> new DeleteCommand(service, params);
             case MARK_IN_PROGRESS   -> throw notImplemented;
             case MARK_DONE          -> throw notImplemented;
             case LIST               -> new ListCommand(service, params);
