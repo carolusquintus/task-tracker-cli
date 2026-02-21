@@ -25,7 +25,7 @@ public final class JsonParser {
         try {
             return Files.readString(path);
         } catch (IOException e) {
-            System.err.println("Error while trying to read json file: %s".formatted(path));
+            System.err.printf("Error while trying to read json file: %s", path);
         }
         return null;
    }
@@ -63,7 +63,7 @@ public final class JsonParser {
         var entries = splitJsonEntries(json);
         for (String entry : entries) {
             var keyValue = entry.split(":", 2);
-            var key = parseJson(keyValue[0]).toString();
+            var key = (String) parseJson(keyValue[0]);
             var value = parseJson(keyValue[1]);
             map.put(key, value);
         }
@@ -142,7 +142,7 @@ public final class JsonParser {
         } else if (json instanceof String str) {
             builder.append("\"").append(str).append("\"").append(",");
         } else if (json instanceof Boolean || json instanceof Number) {
-            builder.append(json.toString()).append(",");
+            builder.append(json).append(",");
         } else {
             builder.append("\"").append(json).append("\"").append(",");
         }

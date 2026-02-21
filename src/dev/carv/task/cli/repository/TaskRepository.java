@@ -15,7 +15,7 @@ import static java.util.Objects.isNull;
 public class TaskRepository implements Repository<Map<String, Object>, Long> {
 
     private List<Map<String, Object>> tasks;
-    private JsonParser parser = JsonParser.getInstance();
+    private final JsonParser parser = JsonParser.getInstance();
     private static final Path TASKS_JSON = Path.of("./tasks-stored.json");
 
     public TaskRepository() {
@@ -30,7 +30,7 @@ public class TaskRepository implements Repository<Map<String, Object>, Long> {
                 tasks = new ArrayList<>();
             }
         } catch (IOException e) {
-            System.err.println("Error reading tasks file: %s".formatted(e.getMessage()));
+            System.err.printf("Error reading tasks file: %s", e.getMessage());
         }
     }
 

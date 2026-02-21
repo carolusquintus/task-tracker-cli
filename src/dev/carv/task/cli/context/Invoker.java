@@ -1,20 +1,17 @@
 package dev.carv.task.cli.context;
 
 import dev.carv.task.cli.command.*;
-import dev.carv.task.cli.repository.TaskRepository;
 import dev.carv.task.cli.service.TaskService;
 
 public class Invoker {
 
-    private ArgumentsParser argumentParser;
-    private Command command;
+    private final Command command;
 
     public Invoker(String[] args) {
         if (args == null || args.length == 0) {
             throw new IllegalArgumentException("No arguments provided");
         }
-        this.argumentParser = new ArgumentsParser(args);
-        var parsed = argumentParser.parse();
+        var parsed = new ArgumentsParser(args).parse();
         var option = parsed.getKey();
         var params = parsed.getValue();
         var service = new TaskService();
