@@ -26,7 +26,7 @@ public enum Option {
             .filter(o -> o.alternativeNames.contains(option))
             .peek(o -> raw = option)
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Unrecognized option: " + option));
+            .orElseThrow(() -> new IllegalArgumentException("Unrecognized option: %s".formatted(option)));
     }
 
     public String getRaw() {

@@ -19,7 +19,7 @@ public class Invoker {
         var params = parsed.getValue();
         var service = new TaskService();
 
-        var notImplemented = new IllegalArgumentException("Option: " + option.getRaw() + " is not implemented yet");
+        var notImplemented = new IllegalArgumentException("Option: %s is not implemented yet".formatted(option.getRaw()));
 
         command = switch (option) {
             case ADD                -> new AddCommand(service, params);

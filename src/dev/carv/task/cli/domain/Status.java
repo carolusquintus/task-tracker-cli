@@ -17,7 +17,7 @@ public enum Status {
         return Arrays.stream(values())
             .filter(s -> s.value.equalsIgnoreCase(value) || s.name().equalsIgnoreCase(value))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Invalid status: " + value));
+            .orElseThrow(() -> new IllegalArgumentException("Invalid status: %s".formatted(value)));
     }
 
 }

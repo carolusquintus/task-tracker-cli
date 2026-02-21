@@ -25,7 +25,7 @@ public final class JsonParser {
         try {
             return Files.readString(path);
         } catch (IOException e) {
-            System.err.println("Error while trying to read json file: " + path);
+            System.err.println("Error while trying to read json file: %s".formatted(path));
         }
         return null;
    }
@@ -54,7 +54,7 @@ public final class JsonParser {
         if (json.equals("null")) {
             return null;
         }
-        throw new IllegalArgumentException("Invalid JSON value: " + json);
+        throw new IllegalArgumentException("Invalid JSON value: %s".formatted(json));
    }
 
    public Map<String, Object> parseJsonObject(String json) {

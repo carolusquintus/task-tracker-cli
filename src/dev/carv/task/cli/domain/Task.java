@@ -35,7 +35,15 @@ public record Task(
     }
 
     public String toString() {
-        return "{\"id\":%d,\"description\":\"%s\",\"status\": \"%s\",\"createdAt\": \"%s\",\"updatedAt\": \"%s\"}".formatted(id, description, status, createdAt, updatedAt);
+        return """
+            {
+                "id": %d,
+                "description": "%s",
+                "status": "%s",
+                "createdAt": "%s",
+                "updatedAt": "%s"
+            }
+            """.formatted(id, description, status, createdAt, updatedAt);
     }
 
 }

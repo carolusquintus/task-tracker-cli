@@ -30,7 +30,7 @@ public class TaskRepository implements Repository<Map<String, Object>, Long> {
                 tasks = new ArrayList<>();
             }
         } catch (IOException e) {
-            System.err.println("Error reading tasks file: " + e.getMessage());
+            System.err.println("Error reading tasks file: %s".formatted(e.getMessage()));
         }
     }
 
