@@ -25,6 +25,19 @@ public final class TaskService {
         return mapper.toTask(taskSaved).id();
     }
 
+    public void update(Task task) {
+        var found = repository.findById(task.id());
+        found.put("description", task.description());
+        found.put("updatedAt", task.updatedAt().toString());
+
+        var foundTask = mapper.toTask(found);
+
+        switch (foundTask.status()) {
+            case TODO, IN_PROGRESS -> repository.update(found);
+            case DONE -> throw new IllegalStateException("Task is already done and cannot be updated further");
+        }
+    }
+
     public List<Task> listTasks(Status query) {
         var task = switch (query) {
             case null -> repository.findAll();

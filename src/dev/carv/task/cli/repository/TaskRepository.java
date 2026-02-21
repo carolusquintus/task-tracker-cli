@@ -59,6 +59,27 @@ public class TaskRepository implements Repository<Map<String, Object>, Long> {
     }
 
     @Override
+    public void update(Map<String, Object> task) {
+        var id = (Long) task.get("id");
+        tasks.stream()
+            .filter(o -> o.get("id").equals(id))
+            .findFirst()
+            .ifPresent(o -> {
+                var index = tasks.indexOf(o);
+                tasks.set(index, task);
+                storeToJson();
+            });
+    }
+
+    @Override
+    public Map<String, Object> findById(Long id) {
+        return tasks.stream()
+            .filter(o -> o.get("id").equals(id))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Task with ID: %d not found".formatted(id)));
+    }
+
+    @Override
     public List<Map<String, Object>> findAll() {
         return this.tasks;
     }

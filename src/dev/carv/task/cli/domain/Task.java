@@ -19,7 +19,7 @@ public record Task(
     }
 
     public Task(Long id, String description) {
-        this(id, description, TODO, LocalDateTime.now(), null);
+        this(id, description, null, null, LocalDateTime.now());
     }
 
     public String idString() {
