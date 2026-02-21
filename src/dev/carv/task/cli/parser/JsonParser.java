@@ -1,4 +1,4 @@
-package dev.carv.task.cli.json;
+package dev.carv.task.cli.parser;
 
 import java.io.IOException;
 import java.nio.file.Files;

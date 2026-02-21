@@ -1,6 +1,6 @@
 package dev.carv.task.cli.repository;
 
-import dev.carv.task.cli.json.JsonParser;
+import dev.carv.task.cli.parser.JsonParser;
 
 import java.io.IOException;
 import java.nio.file.Files;
