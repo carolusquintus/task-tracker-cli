@@ -26,6 +26,10 @@ public record Task(
         this(id, description, null, null, LocalDateTime.now());
     }
 
+    public Task(Long id, Status status) {
+        this(id, null, status, null, LocalDateTime.now());
+    }
+
     public String idString() {
         return Long.toString(id);
     }

@@ -23,7 +23,7 @@ public class Invoker {
             case ADD                -> new AddCommand(service, params);
             case UPDATE             -> new UpdateCommand(service, params);
             case DELETE             -> new DeleteCommand(service, params);
-            case MARK_IN_PROGRESS   -> throw notImplemented;
+            case MARK_IN_PROGRESS   -> new MarkInProgressCommand(service, params);
             case MARK_DONE          -> throw notImplemented;
             case LIST               -> new ListCommand(service, params);
             case VERSION            -> new VersionCommand();

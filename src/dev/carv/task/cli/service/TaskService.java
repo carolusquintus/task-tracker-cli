@@ -9,6 +9,8 @@ import dev.carv.task.cli.repository.TaskRepository;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Optional.ofNullable;
+
 public final class TaskService {
 
     private final TaskMapper mapper;
@@ -27,13 +29,15 @@ public final class TaskService {
 
     public void update(Task task) {
         var found = repository.findById(task.id());
-        found.put("description", task.description());
-        found.put("updatedAt", task.updatedAt().toString());
-
         var foundTask = mapper.toTask(found);
 
         switch (foundTask.status()) {
-            case TODO, IN_PROGRESS -> repository.update(found);
+            case TODO, IN_PROGRESS -> {
+                found.put("status", ofNullable(task.status()).map(Status::name).orElse(found.get("status").toString()));
+                found.put("description", ofNullable(task.description()).orElse(found.get("description").toString()));
+                found.put("updatedAt", task.updatedAt().toString());
+                repository.update(found);
+            }
             case DONE -> throw new IllegalStateException("Task is already done and cannot be updated further");
         }
     }
