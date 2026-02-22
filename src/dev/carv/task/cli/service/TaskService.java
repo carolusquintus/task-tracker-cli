@@ -29,16 +29,16 @@ public final class TaskService {
 
     public void update(Task task) {
         var found = repository.findById(task.id());
-        var foundTask = mapper.toTask(found);
+        var status = Status.fromValue(found.get("status").toString());
 
-        switch (foundTask.status()) {
+        switch (status) {
             case TODO, IN_PROGRESS -> {
                 found.put("status", ofNullable(task.status()).map(Status::name).orElse(found.get("status").toString()));
                 found.put("description", ofNullable(task.description()).orElse(found.get("description").toString()));
                 found.put("updatedAt", task.updatedAt().toString());
                 repository.update(found);
             }
-            case DONE -> throw new IllegalStateException("Task is already done and cannot be updated further");
+            case DONE -> throw new IllegalArgumentException("Task is already done and cannot be updated further");
         }
     }
 

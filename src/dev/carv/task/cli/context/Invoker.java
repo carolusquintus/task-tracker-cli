@@ -17,14 +17,12 @@ public class Invoker {
         var params = parsed.getValue();
         var service = new TaskService();
 
-        var notImplemented = new IllegalArgumentException("Option: %s is not implemented yet".formatted(option.getRaw()));
-
         command = switch (option) {
             case ADD                -> new AddCommand(service, params);
             case UPDATE             -> new UpdateCommand(service, params);
             case DELETE             -> new DeleteCommand(service, params);
             case MARK_IN_PROGRESS   -> new MarkInProgressCommand(service, params);
-            case MARK_DONE          -> throw notImplemented;
+            case MARK_DONE          -> new MarkDoneCommand(service, params);
             case LIST               -> new ListCommand(service, params);
             case VERSION            -> new VersionCommand();
             case HELP               -> new HelpCommand();

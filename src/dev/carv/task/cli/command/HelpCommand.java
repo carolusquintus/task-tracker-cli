@@ -15,6 +15,8 @@ public final class HelpCommand implements Command {
                             update the description of a task by given id
               mark-in-progress, --mark-in-progress, -mip <id>
                             mark a task as in-progress by given id
+              mark-done, --mark-done, -md <id>
+                            mark a task as done by given id
               delete, --delete, -d <id>
                             delete a task by given id
               list, --list, -l <status>|none

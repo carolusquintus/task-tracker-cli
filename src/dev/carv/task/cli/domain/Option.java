@@ -14,7 +14,6 @@ public enum Option {
     VERSION("version", "--version", "-v"),
     HELP( "help", "--help", "-h");
 
-    private static String raw;
     private final List<String> alternativeNames;
 
     Option(String... altNames) {
@@ -24,13 +23,8 @@ public enum Option {
     public static Option fromString(String option) {
         return Arrays.stream(values())
             .filter(o -> o.alternativeNames.contains(option))
-            .peek(o -> raw = option)
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("Unrecognized option: %s".formatted(option)));
-    }
-
-    public String getRaw() {
-        return raw;
     }
 
 }
