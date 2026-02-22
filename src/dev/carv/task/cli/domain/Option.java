@@ -5,14 +5,14 @@ import java.util.List;
 
 public enum Option {
 
-    ADD("add", "--add", "-a"),
-    UPDATE("update", "--update", "-u"),
-    DELETE("delete", "--delete", "-d"),
-    MARK_IN_PROGRESS("mark-in-progress", "--mark-in-progress", "-mip"),
-    MARK_DONE("mark-done", "--mark-done", "-md"),
-    LIST("list", "--list", "-l"),
-    VERSION("version", "--version", "-v"),
-    HELP( "help", "--help", "-h");
+    ADD("-a", "add"),
+    UPDATE("-u", "update"),
+    DELETE("-d", "delete"),
+    MARK_IN_PROGRESS("-mip", "mark-in-progress"),
+    MARK_DONE("-md", "mark-done"),
+    LIST("-l", "list"),
+    VERSION("-v", "version"),
+    HELP( "-h", "help");
 
     private final List<String> alternativeNames;
 

@@ -9,22 +9,22 @@ public final class HelpCommand implements Command {
               or   task [OPTION]
             
             where option is one of:
-              add, --add, -a <description>
-                            add a new task with default status: todo
-              update, --update, -u <id> <description>
-                            update the description of a task by given id
-              mark-in-progress, --mark-in-progress, -mip <id>
-                            mark a task as in-progress by given id
-              mark-done, --mark-done, -md <id>
-                            mark a task as done by given id
-              delete, --delete, -d <id>
-                            delete a task by given id
-              list, --list, -l <status>|none
-                            list task by given status or list all tasks
-              help, --help, -h
-                            print this help message
-              version, --version, -v
-                            print version information
+              -a, add <description>
+                            Add a new task with default status: todo
+              -u, update <id> <description>
+                            Update the description of a task by given id
+              -mip, mark-in-progress <id>
+                            Mark a task as in-progress by given id
+              -md, mark-done <id>
+                            Mark a task as done by given id
+              -d, delete <id>
+                            Delete a task by given id
+              -l, list <status> | none
+                            List task by given status or list all tasks
+              -h, help
+                            Print this help message
+              -v, version
+                            Print version information
             """);
     }
 
