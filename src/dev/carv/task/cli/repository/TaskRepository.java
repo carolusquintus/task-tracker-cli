@@ -23,6 +23,9 @@ public class TaskRepository implements Repository<Map<String, Object>, Long> {
     public TaskRepository() {
         try {
             if (Files.exists(TASKS_JSON)) {
+                if (Files.size(TASKS_JSON) == 0) {
+                    Files.writeString(TASKS_JSON, "[]");
+                }
                 tasks = parseTask();
             } else {
                 var perms = PosixFilePermissions.fromString("rw-rw-rw-");
