@@ -33,4 +33,5 @@ bin/
 ### other ###
 /source.txt
 /*.jar
+/*.gif
 /task
