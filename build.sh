@@ -1,5 +1,46 @@
 #!/bin/bash
 
+if type -p javac; then
+  echo "** javac found in PATH"
+elif [ -n "$JAVA_HOME"] && [ -x "$JAVA_HOME/bin/javac"]; then
+  echo "** javac found in JAVA_HOME"
+else
+  echo "** javac not found"
+  exit 1
+fi
+
+if type -p java; then
+  echo "** java found in PATH"
+  _java=java
+elif [ -n "$JAVA_HOME"] && [ -x "$JAVA_HOME/bin/java"]; then
+  echo "** java found in JAVA_HOME"
+  _java="$JAVA_HOME/bin/java"
+else
+  echo "** java not found"
+  exit 1
+fi
+
+if [ "$_java" ]; then
+  version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
+  echo version "$version"
+  IFS='.' read -ra version_components <<< "$version"
+  if [ ${version_components[0]} -ge 25 ]; then
+    echo "** java version is greater or equal than 25"
+  else
+    echo "** java version is lower than 25"
+    exit 1
+  fi
+fi
+
+if type -p native-image; then
+  echo "** native-image found in PATH"
+elif [ -n "$JAVA_HOME"] && [ -x "$JAVA_HOME/bin/native-image"]; then
+  echo "** native-image found in JAVA_HOME"
+else
+  echo "** native-image not found"
+  exit 1
+fi
+
 # 1- removes all files from ./out folder
 # 2- get all and only .java files existent at ./src folder and print result to source.txt
 # 3- compiles all .java files obtained from source.txt and place them at ./out folder
