@@ -62,7 +62,7 @@ public final class ListCommand implements Command {
         return result;
     }
 
-    private static void printLine(Map<String, Integer> columnSizes) {
+    private void printLine(Map<String, Integer> columnSizes) {
         IO.println(new StringBuilder()
             .append('+').append("-".repeat(columnSizes.get("id")))
             .append('+').append("-".repeat(columnSizes.get("description")))
@@ -72,7 +72,7 @@ public final class ListCommand implements Command {
             .toString());
     }
 
-    private static void printHeader(Map<String, Integer> columnSizes) {
+    private void printHeader(Map<String, Integer> columnSizes) {
         IO.println(new StringBuilder()
             .append('|').append(" ID").append(" ".repeat(columnSizes.get("id") - 3))
             .append('|').append(" DESCRIPTION").append(" ".repeat(columnSizes.get("description") - 12))
@@ -82,7 +82,7 @@ public final class ListCommand implements Command {
             .toString());
     }
 
-    private static void printRows(List<Task> tasks, Map<String, Integer> columnSizes) {
+    private void printRows(List<Task> tasks, Map<String, Integer> columnSizes) {
         tasks.forEach(t -> IO.println(
             new StringBuilder()
                 .append('|').append(" ".repeat(columnSizes.get("id") - t.idString().length() - 1)).append(t.id()).append(' ')
