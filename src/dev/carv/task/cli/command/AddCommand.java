@@ -15,7 +15,7 @@ public final class AddCommand implements Command {
         if (params.isEmpty()) {
             throw new IllegalArgumentException("Description is required to add a new task");
         }
-        this.description = params.getFirst().replaceAll("\\n", "");
+        this.description = params.getFirst().replaceAll("\\n", "\\\\n");
     }
 
     @Override
