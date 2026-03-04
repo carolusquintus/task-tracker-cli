@@ -34,6 +34,17 @@ public record Task(
         return Long.toString(id);
     }
 
+    public String shortDescription() {
+        var desc = description;
+        if (desc.contains("\\n")) {
+            desc = desc.substring(0, desc.indexOf("\\n")) + "...";
+        }
+        if (desc.length() > 40) {
+            desc = desc.substring(0, 40) + "...";
+        }
+        return desc;
+    }
+
     public String createdAtFormatted(DateTimeFormatter format) {
         return isNull(createdAt) ? "null" : format.format(createdAt);
     }

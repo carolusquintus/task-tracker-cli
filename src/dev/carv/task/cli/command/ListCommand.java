@@ -50,7 +50,7 @@ public final class ListCommand implements Command {
 
         tasks.forEach(t -> {
             result.computeIfPresent("id", (k, h) -> h.withSize(max(h.size(), t.idString().length())));
-            result.computeIfPresent("description", (k, h) -> h.withSize(max(h.size(), shortDescription(t.description()).length())));
+            result.computeIfPresent("description", (k, h) -> h.withSize(max(h.size(), t.shortDescription().length())));
             result.computeIfPresent("status", (k, h) -> h.withSize(max(h.size(), t.status().name().length())));
             result.computeIfPresent("createdAt", (k, h) -> h.withSize(max(h.size(), t.createdAtFormatted(FORMAT_DATE).length())));
             result.computeIfPresent("updatedAt", (k, h) -> h.withSize(max(h.size(), t.updatedAtFormatted(FORMAT_DATE).length())));
@@ -83,8 +83,8 @@ public final class ListCommand implements Command {
     private void printRows(List<Task> tasks, Map<String, Header> columns) {
         tasks.forEach(t -> IO.println(
             new StringBuilder()
-                .append('|').append(" ".repeat(columns.get("id").size() - t.idString().length() - 1)).append(t.id()).append(' ')
-                .append(cell(shortDescription(t.description()), columns.get("description")))
+                .append(cell(t.id(), columns.get("id")))
+                .append(cell(t.shortDescription(), columns.get("description")))
                 .append(cell(t.status().name(), columns.get("status")))
                 .append(cell(t.createdAtFormatted(FORMAT_DATE), columns.get("createdAt")))
                 .append(cell(t.updatedAtFormatted(FORMAT_DATE), columns.get("updatedAt")))
@@ -93,19 +93,13 @@ public final class ListCommand implements Command {
         ));
     }
 
-    private String cell(String column, Header header) {
-        return new StringBuilder().append('|').append(' ').append(column)
-            .append(" ".repeat(header.size() - column.length() - 2)).append(' ').toString();
-    }
-
-    private String shortDescription(String desc) {
-        if (desc.contains("\\n")) {
-            return shortDescription(desc.substring(0, desc.indexOf("\\n")) + "...");
-        }
-        if (desc.length() > 40) {
-            return desc.substring(0, 40) + "...";
-        }
-        return desc;
+    private String cell(Object cell, Header header) {
+        var builder = new StringBuilder().append('|');
+        return switch (cell) {
+            case Number n ->    builder.append(" ".repeat(header.size() - n.toString().length() - 1)).append(n).append(' ').toString();
+            case String s ->    builder.append(' ').append(s).append(" ".repeat(header.size() - s.length() - 2)).append(' ').toString();
+            default ->          builder.append(" ".repeat(header.size())).toString();
+        };
     }
 
     record Header(String title, Integer size) {
