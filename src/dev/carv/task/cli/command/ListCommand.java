@@ -40,58 +40,84 @@ public final class ListCommand implements Command {
         printLine(columnSizes);
     }
 
-    private Map<String, Integer> collectColumnSizes(List<Task> tasks) {
-        var result = new LinkedHashMap<>(Map.of(
-            "id",           "ID".length(),
-            "description",  "DESCRIPTION".length(),
-            "status",       "STATUS".length(),
-            "createdAt",    "CREATED AT".length(),
-            "updatedAt",    "UPDATED AT".length()
-        ));
+    private Map<String, Header> collectColumnSizes(List<Task> tasks) {
+        var result = new LinkedHashMap<String, Header>();
+        result.put("id",           new Header("ID"));
+        result.put("description",  new Header("DESCRIPTION"));
+        result.put("status",       new Header("STATUS"));
+        result.put("createdAt",    new Header("CREATED AT"));
+        result.put("updatedAt",    new Header("UPDATED AT"));
 
-        for (var task : tasks) {
-            result.put("id", max(result.get("id"), task.idString().length()));
-            result.put("description", max(result.get("description"), task.description().length()));
-            result.put("status", max(result.get("status"), task.status().name().length()));
-            result.put("createdAt", max(result.get("createdAt"), task.createdAtFormatted(FORMAT_DATE).length()));
-            result.put("updatedAt", max(result.get("updatedAt"), task.updatedAtFormatted(FORMAT_DATE).length()));
+        for (var t : tasks) {
+            result.computeIfPresent("id", (k, h) -> h.whitSize(max(h.size(), t.idString().length())));
+            result.computeIfPresent("description", (k, h) -> h.whitSize(max(h.size(), shortDescription(t.description()).length())));
+            result.computeIfPresent("status", (k, h) -> h.whitSize(max(h.size(), t.status().name().length())));
+            result.computeIfPresent("createdAt", (k, h) -> h.whitSize(max(h.size(), t.createdAtFormatted(FORMAT_DATE).length())));
+            result.computeIfPresent("updatedAt", (k, h) -> h.whitSize(max(h.size(), t.updatedAtFormatted(FORMAT_DATE).length())));
         }
 
-        result.replaceAll((k, v) -> v + 2);
+        result.replaceAll((k, h) -> h.whitSize(h.size() + 2));
 
         return result;
     }
 
-    private void printLine(Map<String, Integer> columnSizes) {
-        IO.println(new StringBuilder()
-            .append('+').append("-".repeat(columnSizes.get("id")))
-            .append('+').append("-".repeat(columnSizes.get("description")))
-            .append('+').append("-".repeat(columnSizes.get("status")))
-            .append('+').append("-".repeat(columnSizes.get("createdAt")))
-            .append('+').append("-".repeat(columnSizes.get("updatedAt"))).append('+')
-            .toString());
+    private void printLine(Map<String, Header> columns) {
+        var builder = new StringBuilder();
+        columns.entrySet().forEach(e ->
+            builder.append('+').append("-".repeat(e.getValue().size()))
+        );
+        builder.append('+');
+        IO.println(builder.toString());
     }
 
-    private void printHeader(Map<String, Integer> columnSizes) {
-        IO.println(new StringBuilder()
-            .append('|').append(" ID").append(" ".repeat(columnSizes.get("id") - 3))
-            .append('|').append(" DESCRIPTION").append(" ".repeat(columnSizes.get("description") - 12))
-            .append('|').append(" STATUS").append(" ".repeat(columnSizes.get("status") - 7))
-            .append('|').append(" CREATED AT").append(" ".repeat(columnSizes.get("createdAt") - 11))
-            .append('|').append(" UPDATED AT").append(" ".repeat(columnSizes.get("updatedAt") - 11)).append('|')
-            .toString());
+    private void printHeader(Map<String, Header> columns) {
+        var builder = new StringBuilder();
+        columns.entrySet().forEach(e -> {
+            var h = e.getValue();
+            builder.append('|').append(' ').append(h.title()).append(" ".repeat(h.size() - (h.title().length() + 1)));
+        });
+        builder.append('|');
+        IO.println(builder.toString());
     }
 
-    private void printRows(List<Task> tasks, Map<String, Integer> columnSizes) {
+    private void printRows(List<Task> tasks, Map<String, Header> columns) {
         tasks.forEach(t -> IO.println(
             new StringBuilder()
-                .append('|').append(" ".repeat(columnSizes.get("id") - t.idString().length() - 1)).append(t.id()).append(' ')
-                .append('|').append(' ').append(t.description()).append(" ".repeat(columnSizes.get("description") - t.description().length() - 2)).append(' ')
-                .append('|').append(' ').append(t.status().name()).append(" ".repeat(columnSizes.get("status") - t.status().name().length() - 2)).append(' ')
-                .append('|').append(' ').append(t.createdAtFormatted(FORMAT_DATE)).append(" ".repeat(columnSizes.get("createdAt") - t.createdAtFormatted(FORMAT_DATE).length() - 2)).append(' ')
-                .append('|').append(' ').append(t.updatedAtFormatted(FORMAT_DATE)).append(" ".repeat(columnSizes.get("updatedAt") - t.updatedAtFormatted(FORMAT_DATE).length() - 2)).append(' ').append('|')
+                .append('|').append(" ".repeat(columns.get("id").size() - t.idString().length() - 1)).append(t.id()).append(' ')
+                .append(cell(shortDescription(t.description()), columns.get("description")))
+                .append(cell(t.status().name(), columns.get("status")))
+                .append(cell(t.createdAtFormatted(FORMAT_DATE), columns.get("createdAt")))
+                .append(cell(t.updatedAtFormatted(FORMAT_DATE), columns.get("updatedAt")))
+                .append('|')
                 .toString()
         ));
+    }
+
+    private String cell(String column, Header header) {
+        return new StringBuilder().append('|').append(' ').append(column)
+            .append(" ".repeat(header.size() - column.length() - 2)).append(' ').toString();
+    }
+
+    private String shortDescription(String desc) {
+        if (desc.contains("\\n")) {
+            return shortDescription(desc.substring(0, desc.indexOf("\\n")) + "...");
+        }
+        if (desc.length() > 40) {
+            return desc.substring(0, 40) + "...";
+        }
+        return desc;
+    }
+
+    record Header(String title, Integer size) {
+
+        Header(String title) {
+            this(title, title.length());
+        }
+
+        public Header whitSize(Integer size) {
+            return new Header(this.title, size);
+        }
+
     }
 
 }
