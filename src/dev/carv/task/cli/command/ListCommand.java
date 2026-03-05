@@ -63,19 +63,15 @@ public final class ListCommand implements Command {
 
     private void printLine(Map<String, Header> columns) {
         var builder = new StringBuilder();
-        columns.entrySet().forEach(e ->
-            builder.append('+').append("-".repeat(e.getValue().size()))
-        );
+        columns.forEach((k, h) -> builder.append('+').append("-".repeat(h.size())));
         builder.append('+');
         IO.println(builder.toString());
     }
 
     private void printHeader(Map<String, Header> columns) {
         var builder = new StringBuilder();
-        columns.entrySet().forEach(e -> {
-            var h = e.getValue();
-            builder.append('|').append(' ').append(h.title()).append(" ".repeat(h.size() - (h.title().length() + 1)));
-        });
+        columns.forEach((k, h) -> builder
+            .append('|').append(' ').append(h.title()).append(" ".repeat(h.size() - (h.title().length() + 1))));
         builder.append('|');
         IO.println(builder.toString());
     }
