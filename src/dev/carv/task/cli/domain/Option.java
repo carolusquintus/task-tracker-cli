@@ -10,6 +10,7 @@ public enum Option {
     DELETE("-d", "delete"),
     MARK_IN_PROGRESS("-mip", "mark-in-progress"),
     MARK_DONE("-md", "mark-done"),
+    SHOW("-s", "show"),
     LIST("-l", "list"),
     VERSION("-v", "version"),
     HELP( "-h", "help");
