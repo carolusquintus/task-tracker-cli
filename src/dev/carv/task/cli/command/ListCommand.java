@@ -49,11 +49,11 @@ public final class ListCommand implements Command {
         result.put("updatedAt",    new Header("UPDATED AT"));
 
         tasks.forEach(t -> {
-            result.computeIfPresent("id", (k, h) -> h.withSize(max(h.size(), t.idString().length())));
-            result.computeIfPresent("description", (k, h) -> h.withSize(max(h.size(), t.shortDescription().length())));
-            result.computeIfPresent("status", (k, h) -> h.withSize(max(h.size(), t.status().name().length())));
-            result.computeIfPresent("createdAt", (k, h) -> h.withSize(max(h.size(), t.createdAtFormatted(FORMAT_DATE).length())));
-            result.computeIfPresent("updatedAt", (k, h) -> h.withSize(max(h.size(), t.updatedAtFormatted(FORMAT_DATE).length())));
+            result.computeIfPresent("id",           (k, h) -> h.withSize(max(h.size(), t.idString().length())));
+            result.computeIfPresent("description",  (k, h) -> h.withSize(max(h.size(), t.shortDescription().length())));
+            result.computeIfPresent("status",       (k, h) -> h.withSize(max(h.size(), t.status().name().length())));
+            result.computeIfPresent("createdAt",    (k, h) -> h.withSize(max(h.size(), t.createdAtFormatted(FORMAT_DATE).length())));
+            result.computeIfPresent("updatedAt",    (k, h) -> h.withSize(max(h.size(), t.updatedAtFormatted(FORMAT_DATE).length())));
         });
 
         result.replaceAll((k, h) -> h.withSize(h.size() + 2));
