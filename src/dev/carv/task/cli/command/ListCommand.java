@@ -79,9 +79,9 @@ public final class ListCommand implements Command {
     private void printRows(List<Task> tasks, Map<String, Header> columns) {
         tasks.forEach(t -> IO.println(
             new StringBuilder()
-                .append(cell(t.id(), columns.get("id")))
-                .append(cell(t.shortDescription(), columns.get("description")))
-                .append(cell(t.status().name(), columns.get("status")))
+                .append(cell(t.id(),                            columns.get("id")))
+                .append(cell(t.shortDescription(),              columns.get("description")))
+                .append(cell(t.status().name(),                 columns.get("status")))
                 .append(cell(t.createdAtFormatted(FORMAT_DATE), columns.get("createdAt")))
                 .append(cell(t.updatedAtFormatted(FORMAT_DATE), columns.get("updatedAt")))
                 .append('|')
@@ -92,9 +92,9 @@ public final class ListCommand implements Command {
     private String cell(Object cell, Header header) {
         var builder = new StringBuilder().append('|');
         return switch (cell) {
-            case Number n ->    builder.append(" ".repeat(header.size() - n.toString().length() - 1)).append(n).append(' ').toString();
-            case String s ->    builder.append(' ').append(s).append(" ".repeat(header.size() - s.length() - 2)).append(' ').toString();
-            default ->          builder.append(" ".repeat(header.size())).toString();
+            case Number n   -> builder.append(" ".repeat(header.size() - n.toString().length() - 1)).append(n).append(' ').toString();
+            case String s   -> builder.append(' ').append(s).append(" ".repeat(header.size() - s.length() - 2)).append(' ').toString();
+            default         -> builder.append(" ".repeat(header.size())).toString();
         };
     }
 
