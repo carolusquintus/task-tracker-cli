@@ -42,6 +42,11 @@ public final class TaskService {
         }
     }
 
+    public Task show(Task task) {
+        var found = repository.findById(task.id());
+        return mapper.toTask(found);
+    }
+
     public void delete(Task task) {
         var found = repository.findById(task.id());
         repository.delete(found);
