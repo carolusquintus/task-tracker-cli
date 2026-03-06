@@ -4,14 +4,18 @@ import dev.carv.task.cli.command.*;
 import dev.carv.task.cli.parser.ArgumentsParser;
 import dev.carv.task.cli.service.TaskService;
 
+import java.time.format.DateTimeFormatter;
+
 public class Invoker {
 
     private final Command command;
+    private static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public Invoker(String[] args) {
         if (args == null || args.length == 0) {
             throw new IllegalArgumentException("No arguments provided");
         }
+
         var parsed = new ArgumentsParser(args).parse();
         var option = parsed.getKey();
         var params = parsed.getValue();
@@ -23,8 +27,8 @@ public class Invoker {
             case DELETE             -> new DeleteCommand(service, params);
             case MARK_IN_PROGRESS   -> new MarkInProgressCommand(service, params);
             case MARK_DONE          -> new MarkDoneCommand(service, params);
-            case SHOW               -> new ShowCommand(service, params);
-            case LIST               -> new ListCommand(service, params);
+            case SHOW               -> new ShowCommand(service, params, FORMAT_DATE);
+            case LIST               -> new ListCommand(service, params, FORMAT_DATE);
             case VERSION            -> new VersionCommand();
             case HELP               -> new HelpCommand();
         };

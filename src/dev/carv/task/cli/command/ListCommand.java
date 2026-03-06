@@ -15,9 +15,10 @@ public final class ListCommand implements Command {
 
     private Status query;
     private final TaskService service;
-    private static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter formatter;
 
-    public ListCommand(TaskService service, List<String> params) {
+    public ListCommand(TaskService service, List<String> params, DateTimeFormatter formatter) {
+        this.formatter = formatter;
         this.service = service;
         if (!params.isEmpty()) {
             this.query = Status.fromValue(params.getFirst());
@@ -52,8 +53,8 @@ public final class ListCommand implements Command {
             result.computeIfPresent("id",           (k, h) -> h.withSize(max(h.size(), t.idString().length())));
             result.computeIfPresent("description",  (k, h) -> h.withSize(max(h.size(), t.shortDescription().length())));
             result.computeIfPresent("status",       (k, h) -> h.withSize(max(h.size(), t.status().name().length())));
-            result.computeIfPresent("createdAt",    (k, h) -> h.withSize(max(h.size(), t.createdAtFormatted(FORMAT_DATE).length())));
-            result.computeIfPresent("updatedAt",    (k, h) -> h.withSize(max(h.size(), t.updatedAtFormatted(FORMAT_DATE).length())));
+            result.computeIfPresent("createdAt",    (k, h) -> h.withSize(max(h.size(), t.createdAtFormatted(formatter).length())));
+            result.computeIfPresent("updatedAt",    (k, h) -> h.withSize(max(h.size(), t.updatedAtFormatted(formatter).length())));
         });
 
         result.replaceAll((k, h) -> h.withSize(h.size() + 2));
@@ -82,8 +83,8 @@ public final class ListCommand implements Command {
                 .append(cell(t.id(),                            columns.get("id")))
                 .append(cell(t.shortDescription(),              columns.get("description")))
                 .append(cell(t.status().name(),                 columns.get("status")))
-                .append(cell(t.createdAtFormatted(FORMAT_DATE), columns.get("createdAt")))
-                .append(cell(t.updatedAtFormatted(FORMAT_DATE), columns.get("updatedAt")))
+                .append(cell(t.createdAtFormatted(formatter),   columns.get("createdAt")))
+                .append(cell(t.updatedAtFormatted(formatter),   columns.get("updatedAt")))
                 .append('|')
                 .toString()
         ));
