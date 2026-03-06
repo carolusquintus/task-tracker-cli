@@ -3,9 +3,10 @@ package dev.carv.task.cli.command;
 import dev.carv.task.cli.domain.Task;
 import dev.carv.task.cli.service.TaskService;
 
-import java.util.LinkedHashMap;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.Math.max;
 
@@ -13,9 +14,11 @@ public final class ShowCommand implements Command {
 
     private final Long id;
     private final TaskService service;
+    private final DateTimeFormatter formatter;
 
-    public ShowCommand(TaskService service, List<String> params) {
+    public ShowCommand(TaskService service, List<String> params, DateTimeFormatter formatter) {
         this.service = service;
+        this.formatter = formatter;
         if (params.isEmpty()) {
             throw new IllegalArgumentException("ID is required to show the detail of a task");
         }
@@ -28,41 +31,28 @@ public final class ShowCommand implements Command {
 
     @Override
     public void execute() {
-        var task = service.show(new Task(id));
+        var task = service.getTask(new Task(id));
+        printTable(task);
+    }
+
+    private void printTable(Task task) {
 
 
     }
 
-    private Map<String, Row> collectRowSizes(Task task) {
-        var result = new LinkedHashMap<String, Row>();
-        result.put("id",           new Row("ID"));
-        result.put("description",  new Row("DESCRIPTION"));
-        result.put("status",       new Row("STATUS"));
-        result.put("createdAt",    new Row("CREATED AT"));
-        result.put("updatedAt",    new Row("UPDATED AT"));
+    private Row collectRowSizes(Task task) {
+        var headers = List.of("ID", "DESCRIPTION", "STATUS", "CREATED AT", "UPDATED AT");
 
-        var x = task.description().lines().mapToInt(String::length).max().orElse(0);
-        var y = (int) task.description().lines().count();
+        var longestHeader = headers.stream()
+            .max(Comparator.comparingInt(String::length))
+            .orElse("");
 
-        result.computeIfPresent("id",           (k, h) -> h.withSizes(x, 1));
-        result.computeIfPresent("description",  (k, h) -> h.withSizes(x, y));
-        result.computeIfPresent("status",       (k, h) -> h.withSizes(max(h.x(), task.status().name().length()), h.y()));
-        result.computeIfPresent("createdAt",    (k, h) -> h.withSizes(max(h.x(), task.createdAtFormatted(FORMAT_DATE).length()), h.y()));
-        result.computeIfPresent("updatedAt",    (k, h) -> h.withSizes(max(h.x(), task.updatedAtFormatted(FORMAT_DATE).length()), h.y()));
+        var longestLine = task.description().lines()
+            .max(Comparator.comparingInt(String::length))
+            .orElse("");
 
-        result.replaceAll((k, h) -> h.withSizes(h.x() + 2, h.y() + 1));
-        return result;
+        return new Row(longestHeader.length() + 2, longestLine.length() + 2);
     }
 
-    record Row(String header, Integer x, Integer y) {
-
-        Row(String header) {
-            this(header, 1, 1);
-        }
-
-        public Row withSizes(Integer x, Integer y) {
-            return new Row(header, x, y);
-        }
-
-    }
+    record Row(Integer headerWidth, Integer dataWidth) {}
 }
