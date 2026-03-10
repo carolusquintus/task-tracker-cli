@@ -3,11 +3,10 @@ package dev.carv.task.cli.command;
 import dev.carv.task.cli.domain.Task;
 import dev.carv.task.cli.service.TaskService;
 
-import java.lang.reflect.Field;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.lang.Math.max;
 
@@ -37,15 +36,9 @@ public final class ShowCommand implements Command {
     }
 
     private Row collectRowSizes(Task task) {
-        var longestHeader = Arrays.stream(Task.class.getFields())
-            .map(Field::getName)
-            .peek(IO::println)
-            .map(f -> f.replaceAll("(?<!^)([A-Z])",  " $1"))
-            .peek(IO::println)
-            .map(String::toUpperCase)
-            .peek(IO::println)
+        var longestHeader = Stream.of("ID", "DESCRIPTION", "STATUS", "CREATED AT", "UPDATED AT")
             .max(Comparator.comparingInt(String::length))
-            .orElse("");
+            .orElse("TITLE BIG ENOUGH");
 
         var longestLine = max(task.descriptionLongestLine(), task.createdAtFormatted(formatter).length());
 
