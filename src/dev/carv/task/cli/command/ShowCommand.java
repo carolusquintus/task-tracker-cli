@@ -3,8 +3,9 @@ package dev.carv.task.cli.command;
 import dev.carv.task.cli.domain.Task;
 import dev.carv.task.cli.service.TaskService;
 
+import java.lang.reflect.Field;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -35,24 +36,70 @@ public final class ShowCommand implements Command {
         printTable(task);
     }
 
-    private void printTable(Task task) {
-
-
-    }
-
     private Row collectRowSizes(Task task) {
-        var headers = List.of("ID", "DESCRIPTION", "STATUS", "CREATED AT", "UPDATED AT");
-
-        var longestHeader = headers.stream()
+        var longestHeader = Arrays.stream(Task.class.getFields())
+            .map(Field::getName)
+            .peek(IO::println)
+            .map(f -> f.replaceAll("(?<!^)([A-Z])",  " $1"))
+            .peek(IO::println)
+            .map(String::toUpperCase)
+            .peek(IO::println)
             .max(Comparator.comparingInt(String::length))
             .orElse("");
 
-        var longestLine = task.description().lines()
-            .max(Comparator.comparingInt(String::length))
-            .orElse("");
+        var longestLine = max(task.descriptionLongestLine(), task.createdAtFormatted(formatter).length());
 
-        return new Row(longestHeader.length() + 2, longestLine.length() + 2);
+        return new Row(longestHeader.length() + 2, longestLine + 2);
     }
 
-    record Row(Integer headerWidth, Integer dataWidth) {}
+    private void printTable(Task t) {
+        var row = collectRowSizes(t);
+        var first = true;
+
+        printLine(row);
+        printRow(row, "ID", t.id());
+        printLine(row);
+        for (var line : t.descriptionLines()) {
+            printRow(row, first ? "DESCRIPTION" : "", line);
+            first = false;
+        }
+        printLine(row);
+        printRow(row, "STATUS", t.status().name());
+        printLine(row);
+        printRow(row, "CREATED AT", t.createdAtFormatted(formatter));
+        printLine(row);
+        printRow(row, "UPDATED AT", t.updatedAtFormatted(formatter));
+        printLine(row);
+    }
+
+    private void printLine(Row r) {
+        IO.println(new StringBuilder()
+            .append('+').append("-".repeat(r.titleWidth()))
+            .append('+').append("-".repeat(r.dataWidth()))
+            .append('+').toString());
+    }
+
+    private void printRow(Row r, String title, Object data) {
+        printTitle(r, title);
+        printData(r, data);
+    }
+
+    private void printTitle(Row r, String title) {
+        IO.print(new StringBuilder()
+            .append('|').append(' ').append(title).append(" ".repeat(r.titleWidth() - title.length() - 1)).append('|'));
+    }
+
+    private void printData(Row r, Object data) {
+        var builder = new StringBuilder();
+        switch (data) {
+            case Number n   -> builder.append(" ".repeat(r.dataWidth - n.toString().length() - 1)).append(n).append(' ');
+            case String s   -> builder.append(' ').append(s).append(" ".repeat(r.dataWidth() - s.length() - 1));
+            default         -> builder.append(" ".repeat(r.dataWidth()));
+        }
+        builder.append('|');
+        IO.println(builder.toString());
+    }
+
+    record Row(Integer titleWidth, Integer dataWidth) {}
+
 }
