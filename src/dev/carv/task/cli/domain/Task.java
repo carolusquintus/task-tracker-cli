@@ -2,6 +2,8 @@ package dev.carv.task.cli.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 import static dev.carv.task.cli.domain.Status.TODO;
 import static java.util.Objects.isNull;
@@ -43,6 +45,17 @@ public record Task(
             desc = desc.substring(0, 40) + "...";
         }
         return desc;
+    }
+
+    public List<String> descriptionLines() {
+        return Arrays.asList(description.split("\\\\n"));
+    }
+
+    public Integer descriptionLongestLine() {
+        return descriptionLines().stream()
+            .mapToInt(String::length)
+            .max()
+            .orElse(description.length());
     }
 
     public String createdAtFormatted(DateTimeFormatter format) {
