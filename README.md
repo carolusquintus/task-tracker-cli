@@ -37,7 +37,7 @@ chmod u+x install.sh
 4. Before running the script, make sure you have GraalVM CE for jdk 25 installed.\
    See: [GraalVM SDKMan Installation](https://www.graalvm.org/latest/getting-started/linux/#sdkman)
 5. Run the installation script:\
-   This script will compile and package the project in jar file.\
+   This script will compile and package the project in a jar file.\
    Then it will generate a native binary based on built jar.\
    It also creates a symbolic link at `/usr/local/bin`
 ```shell
