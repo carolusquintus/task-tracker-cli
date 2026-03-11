@@ -39,7 +39,7 @@ Sleep 500ms
 Enter
 Sleep 3s
 
-Type 'which wil help the solution\n'
+Type 'which will help the solution\n'
 Sleep 500ms
 Enter
 Sleep 3s
