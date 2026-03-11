@@ -34,7 +34,22 @@ Sleep 500ms
 Enter
 Sleep 3s
 
-Type 'task update 1 "Finish sequence diagram"'
+Type 'task update 1 "Finish sequence diagram\n'
+Sleep 500ms
+Enter
+Sleep 3s
+
+Type 'which wil help the solution\n'
+Sleep 500ms
+Enter
+Sleep 3s
+
+Type 'to be understood\n'
+Sleep 500ms
+Enter
+Sleep 3s
+
+Type 'by the council architecture"'
 Sleep 500ms
 Enter
 Sleep 3s
@@ -60,6 +75,11 @@ Enter
 Sleep 6s
 
 Type 'task list done'
+Sleep 500ms
+Enter
+Sleep 6s
+
+Type 'task show 1'
 Sleep 500ms
 Enter
 Sleep 6s
