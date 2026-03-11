@@ -31,7 +31,7 @@ public final class ShowCommand implements Command {
 
     @Override
     public void execute() {
-        var task = service.getTask(new Task(id));
+        var task = service.find(new Task(id));
         printTable(task);
     }
 

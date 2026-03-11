@@ -42,7 +42,7 @@ public final class TaskService {
         }
     }
 
-    public Task getTask(Task task) {
+    public Task find(Task task) {
         var found = repository.findById(task.id());
         return mapper.toTask(found);
     }
