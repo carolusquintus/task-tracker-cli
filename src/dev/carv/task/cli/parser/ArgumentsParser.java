@@ -6,13 +6,7 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.List;
 import java.util.Map.Entry;
 
-public class ArgumentsParser {
-
-    private final String[] arguments;
-
-    public ArgumentsParser(String[] args) {
-        this.arguments = args;
-    }
+public record ArgumentsParser(String[] arguments) {
 
     public Entry<Option, List<String>> parse() {
         var option = Option.fromString(arguments[0]);
