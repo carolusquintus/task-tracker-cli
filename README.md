@@ -5,7 +5,7 @@
 
 ### This challenge was developed using:
 
-- Java 25
+- Plain Java 25
 - GraalVM
 - Bash
 
