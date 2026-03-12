@@ -30,7 +30,10 @@ git clone https://github.com/carolusquintus/task-tracker-cli.git
 ```shell
 cd task-tracker-cli
 ```
-3. Give execute permissions for your current user to `install.sh` script: 
+3. Give execute permissions for your current user to `build.sh` and `install.sh` scripts: 
+```shell
+chmod u+x build.sh
+```
 ```shell
 chmod u+x install.sh
 ```
