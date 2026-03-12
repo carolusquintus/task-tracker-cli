@@ -46,7 +46,7 @@ chmod u+x install.sh
 
 ## Usage
 
-All task are stored at current directory where `task` command is executed in `tasks-stored.json
+All task are stored at current directory where `task` command is executed in `tasks-stored.json`
 
 ### Help - It shows all available options of `task`.
 ```shell
